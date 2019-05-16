@@ -1,0 +1,47 @@
+346                             SUMMER                                  LN                    MAPLEWOOD                     MN55117       
+344                             SUMMER                                  LN                    SAINT PAUL                    MN55117       
+21                              CHARLES                                 AVE   #         10    SAINT PAUL                    MN55103       
+25                              CHARLES                                 AVE                   SAINT PAUL                    MN55103       
+761                             CAPITOL                                 HTS   #         25    SAINT PAUL                    MN55103       
+784                             CEDAR                                   ST    #         7     SAINT PAUL                    MN55103       
+895                             EVERGREEN                               CT                    SAINT PAUL                    MN55127       
+885                             EVERGREEN                               CT                    SAINT PAUL                    MN55127       
+729                             UNIVERSITY                              RD                    CLEVELAND                     OH44113       
+27364                           TILLERMAN                               CT                    OLMSTED TWP                   OH44138       
+8716                            BRECKENRIDGE                            OVAL                  BROADVIEW HEIGHTS             OH44147       
+27360                           TILLERMAN                               CT                    OLMSTED TWP                   OH44138       
+348                             LEXINGTON                               CIR                   BROADVIEW HEIGHTS             OH44147       
+5754                          W MILL                                    RD                    BROADVIEW HEIGHTS             OH44147       
+2660                            WOOSTER                                 RD    #         2660  ROCKY RIVER                   OH44116       
+738                           SE56TH                                    AVE                   HILLSBORO                     OR97123       
+22137                         SWARCHERS                                 PL                    SHERWOOD                      OR97140       
+7200                          SWMANOR                                   WAY                   ALOHA                         OR97007       
+767                             CAPITOL                                 HTS   #         22    SAINT PAUL                    MN55103       
+722                             MONTICELLO PLACE                        LN                    CLEVELAND                     OH44143       
+29456                           HUMMINGBIRD                             CIR   #         72    WESTLAKE                      OH44145       
+8757                            BRECKENRIDGE                            OVAL                  BROADVIEW HEIGHTS             OH44147       
+                                SHARON                                  RD                    BRIDGEPORT                    OH43912       
+                                MORGAN HILL                             RD                    ADENA                         OH43901       
+73035                           GRAYS RIDGE                             RD                    SAINT CLAIRSVILLE             OH43950       
+                                HALL                                    ST                    SAINT CLAIRSVILLE             OH43950       
+                                HALL                                    ST                    SAINT CLAIRSVILLE             OH43950       
+72330                           FLUSHING HOLLOWAY                       RD    #         R     FLUSHING                      OH43977       
+38900                           BELMONT RIDGE                           RD                    FLUSHING                      OH43977       
+                                WORLEY SOUTH                            RD                                                  OH00000       
+183                             TWP                                                                                         OH00000       
+41305                           HELEN GREGG                             RD                    BETHESDA                      OH43719       
+                                REPIK                                   RD                    BETHESDA                      OH43719       
+39871                           EVERETT TURNER DORY M                   RD                    BETHESDA                      OH43719       
+203                             TWP                                                           BETHESDA                      OH43719       
+                                COUNTY ROAD 26                                                BETHESDA                      OH43719       
+64400                           OLD TWENTYSIX                           RD                    BETHESDA                      OH43719       
+                                                                                                                            OH00000       
+                                STATE ROAD 149                                                BELMONT                       OH00000       
+                              N HIGH                                    ST                    BETHESDA                      OH43719       
+483                             RESERVOIR                               DR                    BETHESDA                      OH43719       
+35970                           MUSKRAT                                 RD                    BARNESVILLE                   OH43713       
+                              W PIPE CREEK                              RD                    JACOBSBURG                    OH43933       
+                              W PIPE CREEK                              RD                    JACOBSBURG                    OH43933       
+60545                         W PIPE CREEK                              RD                    JACOBSBURG                    OH43933       
+                                                                                                                            OH00000       
+    

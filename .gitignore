@@ -90,4 +90,4 @@ typings/
 # mine
 *.txt
 envs.json
-!/api/src/routes/geocode/data/extract/test.txt
+!/api/src/data/extract/test.txt

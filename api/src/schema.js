@@ -1,29 +1,3 @@
-// const { gql } = require('apollo-server-express')
-// module.exports = 
-//   gql`
-//   type Query {
-//     well(wellName: ID!): Well
-//     surveys(master: Boolean): [Survey]
-//     survey(name: ID!): Survey!
-//     master: [Survey!]
-//   }
-
-//   type Well {
-//     wellName: ID!
-//     uwi:      String!
-//     wellType: String!
-//     licensee: String!
-//     lic: String!
-//     surface:  String!
-//     file: String!
-//   }
-//   type Survey{
-//     data: [[Float!]]
-//     name: ID!
-//     elevation: Float!
-//     surveyWell: Well!
-//   }
-//    `;
 const { buildSchema } = require('graphql');
 module.exports = buildSchema(`
   type Query {
