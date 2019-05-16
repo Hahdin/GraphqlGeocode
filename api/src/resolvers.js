@@ -7,9 +7,6 @@ const {
 } = require('./server')
 
 module.exports = {
-  hello: (root, args, context, info) => {
-    return `${root.msg}`;
-  },
   getAddresses: async (root, args, context, info) => {
     let query = {
       offset: '0',
