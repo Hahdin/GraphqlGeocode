@@ -1,0 +1,27 @@
+{
+  "name": "geocodeapi",
+  "version": "1.0.0",
+  "description": "geocode api",
+  "private": true,
+  "scripts": {
+    "start": "npm test && node api/src/index.js",
+    "test": "ava"
+  },
+  "keywords": [],
+  "author": "blacktoque",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-graphql": "^0.8.0",
+    "graphql": "^14.3.0",
+    "nconf": "^0.10.0",
+    "node-fetch": "^2.5.0",
+    "path": "^0.12.7",
+    "targz": "^1.0.1"
+  },
+  "devDependencies": {
+    "ava": "^1.4.1"
+  }
+}
