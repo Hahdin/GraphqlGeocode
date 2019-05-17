@@ -13,7 +13,7 @@ This API has a single endpoint: ```http://localhost:8080/graphql```
 ### Normal 
 
 ```js
-//Query
+//Query (using Alias 'normal')
 {
   normal: getAddresses(limit:"2"){
     address
@@ -38,7 +38,7 @@ This API has a single endpoint: ```http://localhost:8080/graphql```
 ### geoJSON format
 
 ```js
-//Query
+//Query (using Alias 'geo')
 {
   geo: getAddresses(limit:"2", format: "geoJSON"){
     type
