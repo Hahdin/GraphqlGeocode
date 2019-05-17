@@ -7,6 +7,107 @@ This API uses the ```addresses.tar.gz``` as source data. It should be placed in 
 ## Endpoint
 This API has a single endpoint: ```http://localhost:8080/v0/graphql```
 
+## Query
+
+> Visit http://localhost:8080/v0/graphql in your browser once started to use a handy GraphQL Playground that is built in.
+### Normal 
+
+```js
+//Query
+{
+  normal: getAddresses(limit:"2"){
+    address
+  }
+}
+
+//output
+{
+  "data": {
+    "normal": [
+      {
+        "address": "346 Summer Ln, Maplewood, MN 55117, USA"
+      },
+      {
+        "address": "344 Summer Ln, Maplewood, MN 55117, USA"
+      }
+    ],
+  }
+}
+
+```
+### geoJSON format
+
+```js
+//Query
+{
+  geo: getAddresses(limit:"2", format: "geoJSON"){
+    type
+    metadata{
+      generated
+      title
+      status
+      api
+      count
+    }
+    features{
+      type
+      properties{
+        place
+      }
+      geometry{
+        coordinates
+        type
+      }
+    },
+  }
+}
+
+//output 
+{
+  "data": {
+    "geo": [
+      {
+        "type": "FeatureCollection",
+        "metadata": {
+          "generated": "1558047194051",
+          "title": "Addresses",
+          "status": 200,
+          "api": "1.0.0",
+          "count": 2
+        },
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "place": "346 Summer Ln, Maplewood, MN 55117, USA"
+            },
+            "geometry": {
+              "coordinates": [
+                -93.085594,
+                44.9965369
+              ],
+              "type": "Point"
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "place": "344 Summer Ln, Maplewood, MN 55117, USA"
+            },
+            "geometry": {
+              "coordinates": [
+                -93.085737,
+                44.996536
+              ],
+              "type": "Point"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
 
 ## Installing the app
