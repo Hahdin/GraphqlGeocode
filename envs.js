@@ -17,28 +17,28 @@
 // variables, and files.
 const nconf = (module.exports = require('nconf'));
 const path = require('path');
-const checkConfig = (setting) =>{
-  if (!nconf.get(setting)) {
-    throw new Error(
-      `You must set ${setting} as an environment variable or in envs.json!`
-    );
-  }
+const checkConfig = (setting) => {
+   if (!nconf.get(setting)) {
+      throw new Error(
+         `You must set ${setting} as an environment variable or in envs.json!`
+      );
+   }
 }
 
 nconf
-  // 1. Command-line arguments
-  .argv()
-  // 2. Environment variables
-  .env([
-    'API_KEY',
-  ])
-  // 3. Config file
-  .file({file: path.join(__dirname, 'envs.json')})
-  // 4. Defaults
-  .defaults({
-    API_KEY: '',
-    PORT: 8080,
-  });
+   // 1. Command-line arguments
+   .argv()
+   // 2. Environment variables
+   .env([
+      'API_KEY',
+   ])
+   // 3. Config file
+   .file({ file: path.join(__dirname, 'envs.json') })
+   // 4. Defaults
+   .defaults({
+      API_KEY: '',
+      PORT: 8080,
+   });
 
 // Check for required settings
 checkConfig('API_KEY');

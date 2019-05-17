@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-    extractAddresses, 
+    extractAddresses,
     formatAll,
     makeDataAvailable,
 } from './api/src/server'
@@ -12,7 +12,7 @@ import {
  * makeDataAvailable calls function extractFiledata if the extracted data
  * is not present.
  */
-test('make data available', async function (t){
+test('make data available', async function (t) {
     const src = `${__dirname}\\api\\src\\data\\extract\\addresses.txt`;
     const value = await makeDataAvailable(src);
     t.true(value);
@@ -27,13 +27,13 @@ test('make data available', async function (t){
  */
 test('extract address', async function (t) {
     const query = {
-        type:'ROOFTOP',
+        type: 'ROOFTOP',
         limit: '10',
         offset: '0'
     }
     const src = `${__dirname}\\api\\src\\data\\extract\\test.txt`;
     const value = await extractAddresses(query, src);
-	t.true(Array.isArray(value) && value.length > 0);
+    t.true(Array.isArray(value) && value.length > 0);
 });
 
 /**
@@ -41,9 +41,9 @@ test('extract address', async function (t) {
  * 
  * Should trim values and replace internal ws w/ '+'
  */
-test('formatting', t =>{
+test('formatting', t => {
     let ar = ['One', 'Two Three ', '4 5 6 '];
     ar = formatAll(ar);
-    t.true(ar[1] ==='Two+Three' && ar[2] ==='4+5+6' );
+    t.true(ar[1] === 'Two+Three' && ar[2] === '4+5+6');
 })
 
