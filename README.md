@@ -5,11 +5,11 @@ This API uses the ```addresses.tar.gz``` as source data. It should be placed in 
 - Nodejs (This app was created with Nodejs v10.13.0)
 
 ## Endpoint
-This API has a single endpoint: ```http://localhost:8080/v0/graphql```
+This API has a single endpoint: ```http://localhost:8080/graphql```
 
 ## Query
 
-> Visit http://localhost:8080/v0/graphql in your browser once started to use a handy GraphQL Playground that is built in.
+> Visit http://localhost:8080/graphql in your browser once started to use a handy GraphQL Playground that is built in.
 ### Normal 
 
 ```js
@@ -132,6 +132,7 @@ From the root directory:
 ```bash
 npm start
 ```
+The server should be running at http://localhost:8080/graphql
 
 # Tests
 The test script is run automatically when you start the app. If any test fails the app will not start.
