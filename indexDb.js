@@ -9,16 +9,24 @@ const debugtest = async () => {
       }
       res = await db.getAddresses(0);
       console.log(res);
-      let msg = '<div>'
+      let msg = '<div><table class="table-dark table-hover">'
       let el = document.getElementById('res');
-      el.innerHTML = msg;
+      msg += '<tr><th>street#</th><th>route</th><th>city</th><th>state</th><th>country</th></tr>'
       res.forEach(addy =>{
-         el.innerHTML += `<p>address: ${addy.address}, lat: ${addy.lat}, lng: ${addy.lng}, time: ${addy.time}</p> `
+         msg += `<tr><td>
+         ${addy.street_number[0] ? addy.street_number[0].long_name: ''}</td><td> 
+         ${addy.route[0] ? addy.route[0].long_name : ''}</td><td> 
+         ${addy.locality[0] ? addy.locality[0].long_name : ''}</td><td> 
+         ${addy.administrative_area_level_1[0] ? addy.administrative_area_level_1[0].long_name : ''}</td><td> 
+         ${addy.country[0] ? addy.country[0].long_name : ''}</td></tr> `;
       })
-      el.innerHTML += '</div>'
+      msg += '</table></div>'
+      el.innerHTML += msg;
+
+      
 
       /**
-       * Write addresses from the source file to the indexDB storage
+      // * Write addresses from the source file to the indexDB storage
 
       let promises = [];
       const queryGetSize = `{
@@ -34,11 +42,20 @@ const debugtest = async () => {
       while (start < lines) {
          start += 100;
          res = await postApi(queryGetAddress);
-         // Use transaction oncomplete to make sure the objectStore creation is 
-         // finished before adding data into it.
          res.data.normal.forEach(address => {
-            let addy = {...address};
-            addy.time = new Date().toISOString();
+            let rawAddy = JSON.parse(address.raw);
+            let addy = {
+               place_id : rawAddy.place_id,
+               street_number : rawAddy.address_components.filter(component => component.types.includes('street_number')),
+               route :rawAddy.address_components.filter(component => component.types.includes('route')),
+               locality :rawAddy.address_components.filter(component => component.types.includes('locality')),
+               administrative_area_level_2 :rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_2')),
+               administrative_area_level_1 :rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_1')),
+               country :rawAddy.address_components.filter(component => component.types.includes('country')),
+               postal_code :rawAddy.address_components.filter(component => component.types.includes('postal_code')),
+               lat :rawAddy.geometry.location.lat,
+               lng :rawAddy.geometry.location.lng,
+            }
             promises.push(db.createAddress(addy))
          })
          queryGetAddress = getAddressQuery(100, start);
@@ -47,11 +64,9 @@ const debugtest = async () => {
          console.log(pr);
       }).catch(reason =>console.log(reason));
       */
-
-
-   
+  
       /**
-       * Write a single test address to the IndexDB storage
+      // * Write a single test address to the IndexDB storage
        
       let addy = {
          address: '7127 Hunterwood rd',
@@ -59,7 +74,20 @@ const debugtest = async () => {
          lng: -120.45,
          time: new Date().toISOString()
       };
-      res = await db.createAddress(addy);
+      let rawAddy = JSON.parse("{\"address_components\":[{\"long_name\":\"346\",\"short_name\":\"346\",\"types\":[\"street_number\"]},{\"long_name\":\"Summer Lane\",\"short_name\":\"Summer Ln\",\"types\":[\"route\"]},{\"long_name\":\"Maplewood\",\"short_name\":\"Maplewood\",\"types\":[\"locality\",\"political\"]},{\"long_name\":\"Ramsey County\",\"short_name\":\"Ramsey County\",\"types\":[\"administrative_area_level_2\",\"political\"]},{\"long_name\":\"Minnesota\",\"short_name\":\"MN\",\"types\":[\"administrative_area_level_1\",\"political\"]},{\"long_name\":\"United States\",\"short_name\":\"US\",\"types\":[\"country\",\"political\"]},{\"long_name\":\"55117\",\"short_name\":\"55117\",\"types\":[\"postal_code\"]},{\"long_name\":\"2335\",\"short_name\":\"2335\",\"types\":[\"postal_code_suffix\"]}],\"formatted_address\":\"346 Summer Ln, Maplewood, MN 55117, USA\",\"geometry\":{\"location\":{\"lat\":44.9965369,\"lng\":-93.085594},\"location_type\":\"ROOFTOP\",\"viewport\":{\"northeast\":{\"lat\":44.9978858802915,\"lng\":-93.0842450197085},\"southwest\":{\"lat\":44.9951879197085,\"lng\":-93.08694298029151}}},\"place_id\":\"ChIJhS5HFp7VslIRnA0ypyWae5M\",\"plus_code\":{\"compound_code\":\"XWW7+JQ Maplewood, White Bear Township, MN, United States\",\"global_code\":\"86P8XWW7+JQ\"},\"types\":[\"street_address\"]}");
+      let newAddy = {
+         place_id : rawAddy.place_id,
+         street_number : rawAddy.address_components.filter(component => component.types.includes('street_number')),
+         route :rawAddy.address_components.filter(component => component.types.includes('route')),
+         locality :rawAddy.address_components.filter(component => component.types.includes('locality')),
+         administrative_area_level_2 :rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_2')),
+         administrative_area_level_1 :rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_1')),
+         country :rawAddy.address_components.filter(component => component.types.includes('country')),
+         postal_code :rawAddy.address_components.filter(component => component.types.includes('postal_code')),
+         lat :rawAddy.geometry.location.lat,
+         lng :rawAddy.geometry.location.lng,
+      }
+      res = await db.createAddress(newAddy);
       if (res){
          console.log(res);
          document.getElementById('res').innerHTML += `<br/>${JSON.stringify(res)}`;
@@ -73,10 +101,25 @@ const debugtest = async () => {
    }
 }
 
+const createIndexes = (store) =>{
+   store.createIndex('street_number', "street_number", { unique: false });
+   store.createIndex('route', "route", { unique: false });
+   store.createIndex('locality', "locality", { unique: false });
+   store.createIndex('administrative_area_level_2', "administrative_area_level_2", { unique: false });
+   store.createIndex('administrative_area_level_1', "administrative_area_level_1", { unique: false });
+   store.createIndex('country', "country", { unique: false });
+   store.createIndex('postal_code', "postal_code", { unique: false });
+   store.createIndex('lat', "lat", { unique: false });
+   store.createIndex('lng', "lng", { unique: false });
+}
+
+/**
+ * Promisified interface for IndexDB storage
+ */
 const promiseDb = () => {
    if (!window.indexedDB) 
    {
-      window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+      window.alert("Your browser doesn't support a stable version of IndexedDB.");
       return;
    }
    let addyDB = {};
@@ -84,7 +127,7 @@ const promiseDb = () => {
 
    addyDB.open = () => {
       return new Promise((resolve, reject) => {
-         let request = indexedDB.open('Addresses', 1);
+         let request = indexedDB.open('Addresses', 4);
 
          request.onupgradeneeded = (e) => {
             let db = e.target.result;
@@ -93,9 +136,8 @@ const promiseDb = () => {
                db.deleteObjectStore('addresses');
             }
             // Create a new datastore.
-            let store = db.createObjectStore('addresses', {
-               keyPath: 'address'
-            });
+            let store = db.createObjectStore('addresses', {keyPath: 'place_id'});
+            createIndexes(store);
             resolve('upgrade');
          }
          request.onsuccess = (e) => {
@@ -162,10 +204,11 @@ const promiseDb = () => {
 
 const getAddressQuery = (limit, offset) => {
    return `{
-      normal: getAddresses(limit:"${limit}", offset: "${offset}"){
+      normal: getAddresses(limit:"${limit}", offset: "${offset}", format: "raw"){
          address
          lat
          lng
+         raw
       }
     }`
 }
@@ -199,28 +242,3 @@ const postApi = async (query, filename = null) => {
       jsResult.org_name = filename.toLowerCase()
    return jsResult
 }
-
-
-   // try {
-   //    let res = await postApi(queryGetSize);
-   //    //console.log(res.data.getSize)
-   //    let lines = res.data.getSize;
-   //    let start = 0
-
-   //    while (start < lines) {
-   //       start += 100;
-   //       res = await postApi(queryGetAddress);
-   //       // Use transaction oncomplete to make sure the objectStore creation is 
-   //       // finished before adding data into it.
-   //       res.data.normal.forEach(address => {
-   //          var request = objectStore.add(address);
-   //          request.onsuccess = (event) =>{
-   //             // event.target.result === customer.ssn;
-   //             console.log('added...', event.target.result);
-   //          };
-   //          request.onerror = (event) =>{
-   //             window.alert(event.target.errorCode);
-   //          }
-   //       })
-   //       queryGetAddress = getAddressQuery(100, start);
-   //    }

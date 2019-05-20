@@ -13,6 +13,7 @@ module.exports = buildSchema(`
       metadata: Metadata
       type: String
       size: Int
+      raw: String
    }
    
    type Metadata{

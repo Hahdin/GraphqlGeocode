@@ -163,11 +163,22 @@ const fetchFromAPI = (address, query) => {
                if (!json.results[0].partial_match &&
                   (json.results[0].geometry && json.results[0].geometry.location_type)
                   && query.type === json.results[0].geometry.location_type) {
-                  resolve({
-                     address: `${json.results[0].formatted_address}`,
-                     lat: `${json.results[0].geometry.location.lat}`,
-                     lng: `${json.results[0].geometry.location.lng}`,
-                  });
+                  
+                  //new format 'raw'
+                  if ('raw' === query.format)
+                  {
+                     resolve({
+                        raw: JSON.stringify(json.results[0])
+                     });
+
+                  }
+                  else{
+                     resolve({
+                        address: `${json.results[0].formatted_address}`,
+                        lat: `${json.results[0].geometry.location.lat}`,
+                        lng: `${json.results[0].geometry.location.lng}`,
+                     });
+                  }
                }
                else {
                   resolve();//return null
