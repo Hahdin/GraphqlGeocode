@@ -6,7 +6,28 @@ const {
    getGeoJSON,
 } = require('./server')
 
+const getSize = () => {
+   return new Promise((resolve, reject) => {
+      let bytesPerLine = 140;
+      fs.stat(DATA_SRC, (err, stats) => {
+         if (err) {
+            reject(JSON.stringify({
+               code: 502,
+               msg: 'error getting stats',
+               data: {
+                  error: err,
+               }
+            }));
+         }
+         resolve(stats.size / bytesPerLine);
+      })
+   })
+}
+
 module.exports = {
+   getSize: async () => {
+      return await getSize();
+   },
    getAddresses: async (root, args, context, info) => {
       let query = {
          offset: '0',
@@ -21,7 +42,7 @@ module.exports = {
       if (root.limit) {
          let v = parseInt(root.limit);
          query.limit =
-            v >= 0 ? v < 100 ? root.limit : '0' : '0';
+            v >= 0 ? v <= 100 ? root.limit : '0' : '0';
       }
       if (root.format) {
          query.format = root.format;
@@ -38,21 +59,7 @@ module.exports = {
                }
             });
          }
-         let bytesPerLine = 140;
-         let totalLines = 0;
-         fs.stat(DATA_SRC, (err, stats) => {
-            if (err) {
-               return JSON.stringify({
-                  code: 502,
-                  msg: 'error getting stats',
-                  data: {
-                     error: err,
-                  }
-               });
-            }
-            totalLines = stats.size / bytesPerLine;
-         })
-
+         let totalLines = await getSize();
          let data = await extractAddresses(query, DATA_SRC);
          data = data.filter(item => item);//remove nulls
          if (query.format && 'geoJSON' === query.format) {
@@ -61,6 +68,7 @@ module.exports = {
 
          }
          else {
+            data.map(item => item.size = totalLines)
             return data
          }
       }
@@ -73,5 +81,5 @@ module.exports = {
             }
          });
       }
-   }
+   },
 }

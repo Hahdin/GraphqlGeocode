@@ -2,6 +2,7 @@ const { buildSchema } = require('graphql');
 module.exports = buildSchema(`
    type Query {
       getAddresses(limit: String, offset: String, format: String) : [Address]
+      getSize: Int
    }
 
    type Address{
@@ -11,6 +12,7 @@ module.exports = buildSchema(`
       features: [Feature]
       metadata: Metadata
       type: String
+      size: Int
    }
    
    type Metadata{
