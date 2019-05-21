@@ -26,7 +26,15 @@ const getSize = () => {
 
 module.exports = {
    getSize: async () => {
-      return await getSize();
+      try
+      {
+         return await getSize();
+      }
+      catch(e)
+      {
+         console.error(e);
+         return 0;
+      }
    },
    getAddresses: async (root, args, context, info) => {
       let query = {
