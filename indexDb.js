@@ -8,7 +8,9 @@ const debugtest = async () => {
          return;
       }
       let sort = document.getElementById('sort');
-      res = await db.getByIndex(sort.value);
+      let getValue = document.getElementById('getValue');
+      
+      res = await db.getByIndex(sort.value, getValue.value);
       let el = document.getElementById('res');
       el.innerHTML = '';
       let msg = '<div><table class="table-hover table-striped table-bordered">'
@@ -39,11 +41,9 @@ const debugtest = async () => {
 //debug helpers
 /**
  * 
- * @param {object} db The Database
+ * @param {object} rawAddy raw data from Geocode api
  */
-const writeSingleRecord = async (db) => {
-   // * Write a single test address to the IndexDB storage
-   let rawAddy = JSON.parse("{\"address_components\":[{\"long_name\":\"346\",\"short_name\":\"346\",\"types\":[\"street_number\"]},{\"long_name\":\"Summer Lane\",\"short_name\":\"Summer Ln\",\"types\":[\"route\"]},{\"long_name\":\"Maplewood\",\"short_name\":\"Maplewood\",\"types\":[\"locality\",\"political\"]},{\"long_name\":\"Ramsey County\",\"short_name\":\"Ramsey County\",\"types\":[\"administrative_area_level_2\",\"political\"]},{\"long_name\":\"Minnesota\",\"short_name\":\"MN\",\"types\":[\"administrative_area_level_1\",\"political\"]},{\"long_name\":\"United States\",\"short_name\":\"US\",\"types\":[\"country\",\"political\"]},{\"long_name\":\"55117\",\"short_name\":\"55117\",\"types\":[\"postal_code\"]},{\"long_name\":\"2335\",\"short_name\":\"2335\",\"types\":[\"postal_code_suffix\"]}],\"formatted_address\":\"346 Summer Ln, Maplewood, MN 55117, USA\",\"geometry\":{\"location\":{\"lat\":44.9965369,\"lng\":-93.085594},\"location_type\":\"ROOFTOP\",\"viewport\":{\"northeast\":{\"lat\":44.9978858802915,\"lng\":-93.0842450197085},\"southwest\":{\"lat\":44.9951879197085,\"lng\":-93.08694298029151}}},\"place_id\":\"ChIJhS5HFp7VslIRnA0ypyWae5M\",\"plus_code\":{\"compound_code\":\"XWW7+JQ Maplewood, White Bear Township, MN, United States\",\"global_code\":\"86P8XWW7+JQ\"},\"types\":[\"street_address\"]}");
+const formatAddress = (rawAddy) =>{
    let street_number = rawAddy.address_components.filter(component => component.types.includes('street_number'));
    let route = rawAddy.address_components.filter(component => component.types.includes('route'));
    let locality = rawAddy.address_components.filter(component => component.types.includes('locality'));
@@ -51,19 +51,27 @@ const writeSingleRecord = async (db) => {
    let administrative_area_level_1 = rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_1'));
    let country = rawAddy.address_components.filter(component => component.types.includes('country'));
    let postal_code = rawAddy.address_components.filter(component => component.types.includes('postal_code'));
-   let newAddy = {
+   return {
       place_id: rawAddy.place_id,
-      street_number: street_number[0].long_name,
-      route: route[0].long_name,
-      locality: locality[0].long_name,
-      administrative_area_level_2: administrative_area_level_2[0].long_name,
-      administrative_area_level_1: administrative_area_level_1[0].long_name,
-      country: country[0].long_name,
-      postal_code: postal_code[0].long_name,
+      street_number: street_number[0] ? street_number[0].long_name : '',
+      route: route[0] ? route[0].long_name : '',
+      locality: locality[0] ? locality[0].long_name : '',
+      administrative_area_level_2: administrative_area_level_2[0] ? administrative_area_level_2[0].long_name : '',
+      administrative_area_level_1: administrative_area_level_1[0] ? administrative_area_level_1[0].long_name : '',
+      country: country[0] ? country[0].long_name : '',
+      postal_code: postal_code[0] ? postal_code[0].long_name : '',
       lat: rawAddy.geometry.location.lat,
       lng: rawAddy.geometry.location.lng,
    }
-   res = await db.createAddress(newAddy);
+}
+/**
+ * 
+ * @param {object} db The Database
+ */
+const writeSingleRecord = async (db) => {
+   // * Write a single test address to the IndexDB storage
+   let rawAddy = JSON.parse("{\"address_components\":[{\"long_name\":\"346\",\"short_name\":\"346\",\"types\":[\"street_number\"]},{\"long_name\":\"Summer Lane\",\"short_name\":\"Summer Ln\",\"types\":[\"route\"]},{\"long_name\":\"Maplewood\",\"short_name\":\"Maplewood\",\"types\":[\"locality\",\"political\"]},{\"long_name\":\"Ramsey County\",\"short_name\":\"Ramsey County\",\"types\":[\"administrative_area_level_2\",\"political\"]},{\"long_name\":\"Minnesota\",\"short_name\":\"MN\",\"types\":[\"administrative_area_level_1\",\"political\"]},{\"long_name\":\"United States\",\"short_name\":\"US\",\"types\":[\"country\",\"political\"]},{\"long_name\":\"55117\",\"short_name\":\"55117\",\"types\":[\"postal_code\"]},{\"long_name\":\"2335\",\"short_name\":\"2335\",\"types\":[\"postal_code_suffix\"]}],\"formatted_address\":\"346 Summer Ln, Maplewood, MN 55117, USA\",\"geometry\":{\"location\":{\"lat\":44.9965369,\"lng\":-93.085594},\"location_type\":\"ROOFTOP\",\"viewport\":{\"northeast\":{\"lat\":44.9978858802915,\"lng\":-93.0842450197085},\"southwest\":{\"lat\":44.9951879197085,\"lng\":-93.08694298029151}}},\"place_id\":\"ChIJhS5HFp7VslIRnA0ypyWae5M\",\"plus_code\":{\"compound_code\":\"XWW7+JQ Maplewood, White Bear Township, MN, United States\",\"global_code\":\"86P8XWW7+JQ\"},\"types\":[\"street_address\"]}");
+   res = await db.createAddress(formatAddress(rawAddy));
    if (res) {
       console.log(res);
       document.getElementById('res').innerHTML += `<br/>${JSON.stringify(res)}`;
@@ -92,26 +100,7 @@ const writeRecords = async (db) => {
       res = await postApi(queryGetAddress);
       res.data.normal.forEach(address => {
          let rawAddy = JSON.parse(address.raw);
-         let street_number = rawAddy.address_components.filter(component => component.types.includes('street_number'));
-         let route = rawAddy.address_components.filter(component => component.types.includes('route'));
-         let locality = rawAddy.address_components.filter(component => component.types.includes('locality'));
-         let administrative_area_level_2 = rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_2'));
-         let administrative_area_level_1 = rawAddy.address_components.filter(component => component.types.includes('administrative_area_level_1'));
-         let country = rawAddy.address_components.filter(component => component.types.includes('country'));
-         let postal_code = rawAddy.address_components.filter(component => component.types.includes('postal_code'));
-         let addy = {
-            place_id: rawAddy.place_id,
-            street_number: street_number[0] ? street_number[0].long_name : '',
-            route: route[0] ? route[0].long_name : '',
-            locality: locality[0] ? locality[0].long_name : '',
-            administrative_area_level_2: administrative_area_level_2[0] ? administrative_area_level_2[0].long_name : '',
-            administrative_area_level_1: administrative_area_level_1[0] ? administrative_area_level_1[0].long_name : '',
-            country: country[0] ? country[0].long_name : '',
-            postal_code: postal_code[0] ? postal_code[0].long_name : '',
-            lat: rawAddy.geometry.location.lat,
-            lng: rawAddy.geometry.location.lng,
-         }
-         promises.push(db.createAddress(addy))
+         promises.push(db.createAddress(formatAddress(rawAddy)))
       })
       queryGetAddress = getAddressQuery(100, start);
    }
@@ -145,6 +134,10 @@ const promiseDb = () => {
    }
    let addyDB = {};
    let datastore = null;
+   datastore.onclose = (event) => {
+      window.alert('The database "' + datastore.name + '" has unexpectedly closed.');
+      return;
+   };
    /**
     * Open the addresses database
     */
@@ -209,26 +202,41 @@ const promiseDb = () => {
    /**
     * @param {string} index The index to use
     */
-   addyDB.getByIndex = (index) => {
+   addyDB.getByIndex = (index, value) => {
       let _index = index;
+      let _value = value;
       return new Promise((resolve, reject) => {
          let db = datastore;
          // Initiate a new transaction.
          let transaction = db.transaction(['addresses'], 'readonly');
          let objStore = transaction.objectStore('addresses');
          let storeIndex = objStore.index(_index);
-         let countRequest = storeIndex.count();
-         countRequest.onsuccess = () => {
-            console.log(countRequest.result);
-         }
          let addresses = [];
-         storeIndex.openCursor().onsuccess = (event) => {
-            let cursor = event.target.result;
-            if (cursor) {
-               addresses.push(cursor.value);
-               cursor.continue();
-            } else {
-               resolve(addresses);
+
+         if (value)
+         {
+            let singleKeyRange = IDBKeyRange.only(_value);
+            storeIndex.openCursor(singleKeyRange).onsuccess = (event) => {
+               let cursor = event.target.result;
+               if (cursor) {
+                  addresses.push(cursor.value);
+                  cursor.continue();
+               }
+               else {
+                  resolve(addresses);
+               }
+            };
+         }
+         else
+         {
+            storeIndex.openCursor().onsuccess = (event) => {
+               let cursor = event.target.result;
+               if (cursor) {
+                  addresses.push(cursor.value);
+                  cursor.continue();
+               } else {
+                  resolve(addresses);
+               }
             }
          }
       })
